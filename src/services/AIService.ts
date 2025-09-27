@@ -24,13 +24,17 @@ interface ExecutionResult {
 }
 
 class AIService {
-  private genAI: GoogleGenerativeAI;
-  private model: GenerativeModel;
+  private genAI: GoogleGenerativeAI | null;
+  private model: GenerativeModel | null;
 
   constructor() {
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
     if (!apiKey) {
-      throw new Error('Gemini API key not found');
+      // During build time or when API key is missing, create a mock instance
+      console.warn('Gemini API key not found - running in mock mode');
+      this.genAI = null as any;
+      this.model = null as any;
+      return;
     }
     
     this.genAI = new GoogleGenerativeAI(apiKey);
@@ -43,6 +47,14 @@ class AIService {
         maxOutputTokens: 1024,
       }
     });
+  }
+
+  private checkModelAvailable(): boolean {
+    return this.model !== null && this.genAI !== null;
+  }
+
+  private getMockResponse(context: string): string {
+    return `I'm currently running in demo mode. In a real deployment with proper API configuration, I would provide intelligent AI feedback for: ${context}`;
   }
 
   /**
@@ -63,7 +75,11 @@ class AIService {
     Style: Be encouraging, professional but friendly, like a senior engineer mentoring a colleague.`;
 
     try {
-      const result = await this.model.generateContent(prompt);
+      if (!this.checkModelAvailable()) {
+        return `👋 Welcome! Let's tackle "${problemTitle}" together. This is a popular interview question, so take your time and think aloud as you work through it - that's exactly what interviewers love to see!`;
+      }
+      
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       return response.text();
     } catch (error) {
@@ -115,7 +131,11 @@ class AIService {
     Respond as if you're sitting next to them in an interview. Be conversational, encouraging, and guide them toward better solutions without revealing the answer. Keep it 2-3 sentences.`;
 
     try {
-      const result = await this.model.generateContent(prompt);
+      if (!this.checkModelAvailable()) {
+        return this.getFallbackExecutionResponse(code, isFirstRun);
+      }
+      
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       return response.text();
     } catch (error) {
@@ -159,7 +179,11 @@ class AIService {
     Be encouraging and helpful without giving away the solution. Keep it supportive and interview-appropriate, 2-3 sentences.`;
 
     try {
-      const result = await this.model.generateContent(prompt);
+      if (!this.checkModelAvailable()) {
+        return "I can see you're working hard on this! Sometimes it helps to step back and think about the problem differently. What's the core challenge we're trying to solve here?";
+      }
+      
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       return response.text();
     } catch (error) {
@@ -195,7 +219,16 @@ class AIService {
     Keep it encouraging and interview-appropriate. Never give the full solution.`;
 
     try {
-      const result = await this.model.generateContent(prompt);
+      if (!this.checkModelAvailable()) {
+        const fallbackHints = {
+          1: "Let's think about this step by step. What exactly are we trying to find or achieve?",
+          2: "Consider what data structure would help you keep track of elements efficiently.",
+          3: "Think about whether you need to compare every element with every other element, or if there's a smarter way."
+        };
+        return fallbackHints[hintLevel as keyof typeof fallbackHints] || "Keep thinking - you're on the right track!";
+      }
+      
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       return response.text();
     } catch (error) {
@@ -230,7 +263,11 @@ class AIService {
     Length: 3-4 sentences.`;
 
     try {
-      const result = await this.model.generateContent(prompt);
+      if (!this.checkModelAvailable()) {
+        return `🎉 Great work completing ${problemsSolved} problems! You showed solid problem-solving skills and good coding practices. Keep practicing these patterns - you're on the right track for your next interview!`;
+      }
+      
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       return response.text();
     } catch (error) {
@@ -331,7 +368,16 @@ class AIService {
     `;
 
     try {
-      const result = await this.model.generateContent(prompt);
+      if (!this.checkModelAvailable()) {
+        return {
+          timeComplexity: "O(n)",
+          spaceComplexity: "O(1)",
+          explanation: "Analysis not available in demo mode",
+          suggestions: ["Enable API key for full analysis"]
+        };
+      }
+      
+      const result = await this.model!.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
       
@@ -409,8 +455,12 @@ class AIService {
     `;
 
     try {
+      if (!this.checkModelAvailable()) {
+        return this.getMockResponse(`interview response for "${userMessage}"`);
+      }
+      
       console.log('Attempting to call Gemini API with model: gemini-2.5-flash');
-      const result = await this.model.generateContent(contextPrompt);
+      const result = await this.model!.generateContent(contextPrompt);
       const response = await result.response;
       const text = response.text();
       console.log('Gemini API response received successfully');
