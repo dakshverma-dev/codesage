@@ -1,10 +1,31 @@
 'use client';
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
+
+interface ExecutionResult {
+  output?: string;
+  error?: string;
+  status?: 'success' | 'error';
+  runtime?: number;
+  // Code analysis properties
+  complexity?: string;
+  codeLines?: number;
+  hasComments?: boolean;
+  hasErrorHandling?: boolean;
+  hasFunctionDef?: boolean;
+  hasReturnStatement?: boolean;
+  hasLoops?: boolean;
+  hasConditionals?: boolean;
+  isNestedLoop?: boolean;
+  hasHashMap?: boolean;
+  hasSorting?: boolean;
+  isEmpty?: boolean;
+  isComplete?: boolean;
+}
 
 class AIService {
   private genAI: GoogleGenerativeAI;
-  private model: any;
+  private model: GenerativeModel;
 
   constructor() {
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
@@ -58,7 +79,7 @@ class AIService {
     code: string, 
     problemTitle: string, 
     isFirstRun: boolean = false,
-    executionResult?: any
+    executionResult?: ExecutionResult
   ): Promise<string> {
     const prompt = `You are CodeSage, an experienced and encouraging AI technical interviewer conducting a live coding session. The candidate just ${isFirstRun ? 'ran their first solution' : 'executed updated code'} for "${problemTitle}".
 

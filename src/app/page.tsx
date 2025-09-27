@@ -2,7 +2,6 @@
 
 import { ArrowRight, Code2, BarChart3, Users, CheckCircle, Play, Star } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export default function Home() {
   const features = [
@@ -203,7 +202,7 @@ export default function Home() {
                   ))}
                 </div>
                 <p className="text-gray-600 mb-6 italic">
-                  "{testimonial.content}"
+                  &ldquo;{testimonial.content}&rdquo;
                 </p>
                 <div>
                   <div className="font-semibold text-gray-900">{testimonial.name}</div>
@@ -222,7 +221,7 @@ export default function Home() {
             Start Your Journey to Interview Success
           </h3>
           <p className="text-xl text-purple-100 mb-8">
-            Join thousands of developers who've landed their dream jobs with CodeSage
+            Join thousands of developers who&apos;ve landed their dream jobs with CodeSage
           </p>
           <Link 
             href="/practice"

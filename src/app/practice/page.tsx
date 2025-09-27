@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Play, Clock, BarChart3, MessageSquare, ArrowLeft, Timer, Target, HelpCircle, CheckCircle, AlertCircle, Send } from 'lucide-react';
+import { Play, Clock, BarChart3, MessageSquare, ArrowLeft, Timer, Target, HelpCircle, CheckCircle, Send } from 'lucide-react';
 import Link from 'next/link';
 import CodeEditor from '@/components/CodeEditor';
 import EnhancedChatInterface from '@/components/EnhancedChatInterface';
-import { CODING_PROBLEMS, CodingProblem, getProblemById, getNextProblem } from '@/data/problems';
+import { CODING_PROBLEMS, CodingProblem } from '@/data/problems';
 import AIService from '@/services/AIService';
 
 export default function PracticePage() {
@@ -30,9 +30,8 @@ export default function PracticePage() {
   const [aiService] = useState(() => new AIService());
 
   // Interview tracking states
-  const [isInterviewActive, setIsInterviewActive] = useState(true);
+  const [isInterviewActive] = useState(true);
   const [timeElapsed, setTimeElapsed] = useState(0);
-  const [interviewStartTime, setInterviewStartTime] = useState<Date>(new Date());
   const [hintsUsed, setHintsUsed] = useState(0);
   const [questionsAsked, setQuestionsAsked] = useState(0);
   const [codeSubmissions, setCodeSubmissions] = useState(0);
@@ -66,7 +65,7 @@ export default function PracticePage() {
     
     // Get AI feedback on submission
     try {
-      const response = await aiService.getCodeExecutionResponse(
+      await aiService.getCodeExecutionResponse(
         code, 
         currentProblem.title, 
         false
@@ -99,7 +98,7 @@ export default function PracticePage() {
     if (interviewPhase === 'initial') {
       const sendInitialGreeting = async () => {
         try {
-          const greeting = await aiService.getInitialGreeting(
+          await aiService.getInitialGreeting(
             currentProblem.title,
             currentProblem.description
           );
@@ -111,7 +110,7 @@ export default function PracticePage() {
       
       sendInitialGreeting();
     }
-  }, [currentProblem, interviewPhase]);
+  }, [currentProblem, interviewPhase, aiService]);
 
   // Advanced complexity detection
   const analyzeTimeComplexity = (codeText: string): string => {
@@ -122,7 +121,6 @@ export default function PracticePage() {
     const lines = codeText.split('\n');
     
     // Track patterns
-    let nestedLoopDepth = 0;
     let maxNestedLoops = 0;
     let hasRecursiveCall = false;
     let hasHashSet = false;
@@ -538,7 +536,7 @@ export default function PracticePage() {
               <div>
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Examples</h3>
                 <div className="space-y-2">
-                  {currentProblem.testCases.slice(0, 2).map((example: any, idx: number) => (
+                  {currentProblem.testCases.slice(0, 2).map((example: { input: string; output: string; explanation?: string }, idx: number) => (
                     <div key={idx} className="bg-gray-50 p-3 rounded border-l-2 border-purple-400">
                       <div className="text-xs text-gray-600 mb-1">
                         <span className="font-medium">Input:</span> <code className="bg-white px-1 rounded text-purple-700">{example.input}</code>

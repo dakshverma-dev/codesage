@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import { Mic, MicOff, Volume2, VolumeX, Settings, Loader2 } from 'lucide-react';
 import { voiceService } from '@/services/VoiceService';
 
+// Web Speech API types
+declare global {
+  interface SpeechRecognitionErrorEvent extends Event {
+    error: string;
+    message?: string;
+  }
+}
+
 interface VoiceControlsProps {
   onSpeechResult?: (transcript: string) => void;
   onSpeechStart?: () => void;
@@ -81,7 +89,7 @@ export default function VoiceControls({
         setInterimTranscript('');
         onSpeechEnd?.();
       },
-      onError: (error: any) => {
+      onError: (error: Error | SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', error);
         setIsListening(false);
         setIsProcessing(false);
@@ -110,7 +118,7 @@ export default function VoiceControls({
     voiceService.updateSettings({ autoSpeak: newState });
   };
 
-  const handleVoiceSettingChange = (setting: string, value: any) => {
+  const handleVoiceSettingChange = (setting: string, value: string | number | boolean) => {
     const newSettings = { ...voiceSettings, [setting]: value };
     setVoiceSettings(newSettings);
     voiceService.updateSettings(newSettings);

@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import Editor from '@monaco-editor/react';
+import { editor } from 'monaco-editor';
 
 interface CodeEditorProps {
   value: string;
@@ -10,9 +11,9 @@ interface CodeEditorProps {
 }
 
 export default function CodeEditor({ value, onChange, language }: CodeEditorProps) {
-  const editorRef = useRef(null);
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 
-  const handleEditorDidMount = (editor: any) => {
+  const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
     editorRef.current = editor;
     
     // Configure editor options

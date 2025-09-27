@@ -5,10 +5,10 @@ interface SpeechRecognition extends EventTarget {
   continuous: boolean;
   interimResults: boolean;
   lang: string;
-  onstart: ((this: SpeechRecognition, ev: Event) => any) | null;
-  onend: ((this: SpeechRecognition, ev: Event) => any) | null;
-  onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
-  onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null;
+  onstart: ((this: SpeechRecognition, ev: Event) => void) | null;
+  onend: ((this: SpeechRecognition, ev: Event) => void) | null;
+  onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => void) | null;
+  onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => void) | null;
   start(): void;
   stop(): void;
 }
@@ -27,6 +27,22 @@ declare global {
     SpeechRecognition: new () => SpeechRecognition;
     webkitSpeechRecognition: new () => SpeechRecognition;
   }
+}
+
+interface VoiceServiceInterface {
+  speakText(text: string, options?: { onEnd?: () => void; onError?: (error: Error | SpeechRecognitionErrorEvent) => void; }): Promise<void>;
+  stopSpeaking(): void;
+  startListening(options?: { onResult?: (transcript: string) => void; onInterimResult?: (transcript: string) => void; onStart?: () => void; onEnd?: () => void; onError?: (error: Error | SpeechRecognitionErrorEvent) => void; }): void;
+  stopListening(): void;
+  isSupported(): { speechSynthesis: boolean; speechRecognition: boolean };
+  getSettings(): { speechRate: number; speechPitch: number; speechVolume: number; autoSpeak: boolean; preferredVoice: string; language: string };
+  updateSettings(newSettings: Partial<{ speechRate: number; speechPitch: number; speechVolume: number; autoSpeak: boolean; preferredVoice: string; language: string }>): void;
+  getVoices(): SpeechSynthesisVoice[];
+  setVoice(voiceNameOrIndex: string | number): void;
+  getState(): { isListening: boolean; isSpeaking: boolean; currentVoice: string; voicesAvailable: number; settings: Record<string, unknown> };
+  testTTS(): Promise<boolean>;
+  reinitialize(): void;
+  enableDebugMode(): void;
 }
 
 export class VoiceService {
@@ -147,8 +163,12 @@ export class VoiceService {
     }
 
     // Use webkit prefix for Chrome or standard for other browsers
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    this.recognition = new SpeechRecognition();
+    const WindowWithSpeechRecognition = window as Window & {
+      SpeechRecognition?: new() => SpeechRecognition;
+      webkitSpeechRecognition?: new() => SpeechRecognition;
+    };
+    const SpeechRecognitionClass = WindowWithSpeechRecognition.SpeechRecognition || WindowWithSpeechRecognition.webkitSpeechRecognition;
+    this.recognition = SpeechRecognitionClass ? new SpeechRecognitionClass() : null;
     
     if (this.recognition) {
       this.recognition.continuous = false;
@@ -243,7 +263,7 @@ export class VoiceService {
           errorKeys: Object.keys(error || {}),
           errorReason: error?.error || 'No reason',
           errorName: error?.type || 'No type',
-          errorMessage: (error as any)?.message || 'No message',
+          errorMessage: (error as SpeechSynthesisErrorEvent & { message?: string })?.message || 'No message',
           utteranceText: utterance.text.substring(0, 100),
           utteranceVoice: utterance.voice?.name || 'No voice',
           voicesAvailable: this.voices.length,
@@ -283,7 +303,7 @@ export class VoiceService {
             options?.onEnd?.();
             resolve();
           })
-          .catch((recoveryError: any) => {
+          .catch((recoveryError: Error) => {
             console.error('❌ TTS recovery also failed:', recoveryError);
             options?.onError?.(error);
             reject(new Error(errorMessage));
@@ -389,7 +409,7 @@ export class VoiceService {
     onInterimResult?: (transcript: string) => void;
     onStart?: () => void;
     onEnd?: () => void;
-    onError?: (error: any) => void;
+    onError?: (error: Error | SpeechRecognitionErrorEvent) => void;
   }): void {
     if (!this.recognition) {
       options?.onError?.(new Error('Speech recognition not available'));
@@ -755,9 +775,10 @@ export const voiceService = (() => {
     getSettings: () => ({ speechRate: 1.0, speechPitch: 1.0, speechVolume: 0.8, autoSpeak: true, preferredVoice: 'female', language: 'en-US' }),
     updateSettings: () => {},
     getVoices: () => [],
+    setVoice: () => {},
     getState: () => ({ isListening: false, isSpeaking: false, currentVoice: 'Default', voicesAvailable: 0, settings: {} }),
     testTTS: async () => false,
     reinitialize: () => {},
     enableDebugMode: () => {}
-  } as any;
+  } as VoiceServiceInterface;
 })();

@@ -1,6 +1,6 @@
 'use client';
 
-import { Timer, Target, HelpCircle, CheckCircle, AlertCircle, Clock, BarChart3, MessageCircle } from 'lucide-react';
+import { Timer, Target, HelpCircle, CheckCircle, Clock, BarChart3, MessageCircle } from 'lucide-react';
 
 interface InterviewTrackerProps {
   elapsedTime: number;

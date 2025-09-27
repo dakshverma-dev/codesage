@@ -30,7 +30,7 @@ export default function FeaturesPage() {
     {
       icon: <Users className="w-12 h-12 text-green-600" />,
       title: "Interactive AI Coaching",
-      description: "Get personalized guidance from our AI coach that adapts to your learning style and provides progressive hints when you're stuck.",
+      description: "Get personalized guidance from our AI coach that adapts to your learning style and provides progressive hints when you&apos;re stuck.",
       benefits: [
         "Contextual hints and guidance",
         "Adaptive difficulty adjustment",
@@ -213,7 +213,7 @@ export default function FeaturesPage() {
             Ready to Transform Your Interview Skills?
           </h3>
           <p className="text-xl text-purple-100 mb-8">
-            Join thousands of developers who've succeeded with CodeSage
+            Join thousands of developers who&apos;ve succeeded with CodeSage
           </p>
           <Link 
             href="/practice"

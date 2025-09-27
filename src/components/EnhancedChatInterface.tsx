@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Bot, Send, Loader2 } from 'lucide-react';
 import AIService from '@/services/AIService';
 import VoiceControls from './VoiceControls';
@@ -15,13 +15,14 @@ interface Message {
   isQuestion?: boolean;
 }
 
+import { CodingProblem } from '@/data/problems';
+
 interface EnhancedChatInterfaceProps {
   onHintUsed?: () => void;
   onQuestionAsked?: () => void;
   currentCode?: string;
   problemTitle?: string;
-  currentProblem?: any;
-  onCodeExecution?: (response: string) => void;
+  currentProblem?: CodingProblem;
   interviewPhase?: string;
   aiCodeResponse?: string;
   onCodeResponseHandled?: () => void;
@@ -33,7 +34,6 @@ export default function EnhancedChatInterface({
   currentCode = '', 
   problemTitle = 'Find Duplicates in Array',
   currentProblem,
-  onCodeExecution,
   interviewPhase = 'initial',
   aiCodeResponse = '',
   onCodeResponseHandled
@@ -44,7 +44,7 @@ export default function EnhancedChatInterface({
   const [isTyping, setIsTyping] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiService] = useState(() => new AIService());
-  const [isSpeakingEnabled, setIsSpeakingEnabled] = useState(true);
+  const [isSpeakingEnabled] = useState(true);
 
   // Initial greeting effect
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function EnhancedChatInterface({
       
       sendInitialGreeting();
     }
-  }, [currentProblem, interviewPhase, messages.length, problemTitle]);
+  }, [currentProblem, interviewPhase, messages.length, problemTitle, aiService]);
 
   // Handle AI code execution responses
   useEffect(() => {
@@ -114,43 +114,6 @@ export default function EnhancedChatInterface({
       }
     }
   }, [messages, isSpeakingEnabled, aiCodeResponse]);
-
-  // Enhanced mock responses based on code analysis
-  const getContextualResponse = useCallback((userMessage: string) => {
-    const message = userMessage.toLowerCase();
-    
-    if (message.includes('nested') || message.includes('loop')) {
-      return "📊 **Analytics Insight**: I notice you're considering nested loops - that's a logical first approach! \n\n⚠️ **Performance Impact**: This gives us O(n²) complexity. For enterprise-scale data (1M+ elements), this could mean billions of operations.\n\n💡 **Coaching Tip**: In real interviews, demonstrating awareness of scalability shows senior-level thinking. Can you think of a data structure that offers O(1) lookup time?";
-    }
-    
-    if (message.includes('hash') || message.includes('set')) {
-      return "🎉 **Excellent Choice!** Hash sets are the optimal solution here - you're thinking like a senior engineer!\n\n📈 **Performance Boost**: O(1) average lookup × O(n) iteration = O(n) total complexity\n\n🔧 **Implementation Strategy**: \n1. Create an empty set and result list\n2. For each element: check if it exists in set\n3. If yes → add to results, if no → add to set\n\n💼 **Interview Success**: This approach will impress any interviewer!";
-    }
-    
-    if (message.includes('complexity') || message.includes('time')) {
-      return "📊 **Complexity Analysis** - Great question! This shows algorithmic maturity:\n\n⏱️ **Time Complexity Options**:\n• Nested loops: O(n²) - Works but not scalable\n• Hash set approach: O(n) - Industry standard\n• Sorting first: O(n log n) - Alternative approach\n\n💾 **Space Complexity**: O(n) for hash set - reasonable trade-off\n\n🎯 **CodeSage Tip**: Always discuss both time and space complexity in interviews!";
-    }
-    
-    if (message.includes('hint') || message.includes('help')) {
-      return "💡 **CodeSage Progressive Coaching**:\n\n🔍 **Level 1 Hint**: What data structure allows instant membership checking?\n\n📚 **Level 2 Hint**: Think about Python's `set()` or JavaScript's `Set()`\n\n🚀 **Level 3 Hint**: Iterate once, check existence, then decide to add to results or tracking set\n\n💪 Remember: In real interviews, asking for hints shows engagement, not weakness!";
-    }
-    
-    if (message.includes('done') || message.includes('finished')) {
-      return "🎉 **Solution Analysis Complete!**\n\n✅ **Correctness**: Logic handles edge cases well\n📊 **Performance**: Efficiency meets industry standards\n🗣️ **Communication**: You explained your approach clearly\n\n📈 **CodeSage Score Factors**:\n• Algorithm choice: Optimal\n• Code clarity: Professional\n• Edge case handling: Thorough\n\n🎯 **Next Challenge**: Ready for the follow-up question about memory optimization?";
-    }
-    
-    // Default encouraging responses
-    const defaultResponses = [
-      "💭 **Thoughtful approach!** CodeSage analytics show this type of reasoning leads to strong interview performance. How do you evaluate the efficiency of your current solution?",
-      "🎯 **You're progressing well!** Let's consider scalability - how would your solution perform with enterprise-level data (millions of elements)?",
-      "🔍 **Interesting direction!** Have you considered edge cases? Testing boundary conditions is what separates good developers from great ones.",
-      "📊 **Good analytical thinking!** What's the time complexity here? Remember, interviewers love when candidates proactively discuss Big O notation.",
-      "💡 **Solid reasoning!** CodeSage interview data shows optimization discussions boost candidate scores. What improvements can we explore?",
-      "🚀 **Nice logic flow!** What data structures offer constant-time lookup? Think about the tools in your CS fundamentals toolkit."
-    ];
-    
-    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
-  }, []);
 
   const sendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -269,12 +232,7 @@ export default function EnhancedChatInterface({
     }
   };
 
-  const handleVoiceSpeakingToggle = () => {
-    setIsSpeakingEnabled(!isSpeakingEnabled);
-    if (isSpeakingEnabled) {
-      voiceService.stopSpeaking();
-    }
-  };
+
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
