@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎯 CodeSage - AI-Powered Interview Practice Platform
 
-## Getting Started
+An interactive coding interview practice platform with AI-powered guidance, voice interaction, and real-time feedback.
 
-First, run the development server:
+## 🚀 Features
 
+### 🤖 AI-Powered Interview Experience
+- **Interactive AI Interviewer** - CodeSage provides real-time feedback on every code execution
+- **Smart Guidance** - AI guides without spoiling answers, just like a real interviewer
+- **Complexity Analysis** - Real-time analysis of algorithm complexity (O(n), O(n²), etc.)
+- **Approach Recognition** - Detects coding patterns and suggests optimizations
+
+### 🗣️ Voice Integration
+- **Text-to-Speech** - AI speaks feedback naturally with human-like voice
+- **Speech Recognition** - Voice input for hands-free interaction
+- **Browser Compatibility** - Works across Chrome, Safari, Edge, and Firefox
+- **Enhanced Error Recovery** - Multiple fallback mechanisms for reliable voice functionality
+
+### 💻 Advanced Code Editor
+- **Monaco Editor** - VS Code-like editing experience
+- **Syntax Highlighting** - Full Python syntax support
+- **Real-time Analysis** - Code complexity and pattern detection
+- **Multi-problem Support** - Progressive difficulty with 3+ coding challenges
+
+### 📊 Interview Metrics
+- **Time Tracking** - Monitor coding session duration
+- **Attempt Counter** - Track code execution attempts
+- **Hint Usage** - Optional hints with usage tracking
+- **Progress Analytics** - Performance metrics and feedback
+
+## 🛠️ Tech Stack
+
+- **Framework:** Next.js 15 with TypeScript
+- **Styling:** Tailwind CSS
+- **AI Integration:** Google Gemini 2.5-flash
+- **Voice APIs:** Web Speech API (SpeechSynthesis + SpeechRecognition)
+- **Code Editor:** Monaco Editor (VS Code editor component)
+- **Icons:** Lucide React
+- **Build Tool:** Turbopack
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Google Gemini API key
+
+### Installation
+
+1. **Clone the repository**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/codesage.git
+cd codesage
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install dependencies**
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Set up environment variables**
+Create a `.env.local` file in the root directory and add your Google Gemini API key:
+```env
+NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Run the development server**
+```bash
+npm run dev
+```
 
-## Learn More
+5. **Open in browser**
+Navigate to [http://localhost:3000](http://localhost:3000)
 
-To learn more about Next.js, take a look at the following resources:
+## 🎮 How to Use
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 1. Start Interview Session
+- Click "Start Practice Session" on the homepage
+- Choose from available coding problems
+- Begin with the first problem
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 2. Coding Experience
+- Write your solution in the Monaco editor
+- Click "Run Code" for AI feedback after each attempt
+- AI provides encouraging guidance without spoiling answers
+- Use voice controls for hands-free interaction
 
-## Deploy on Vercel
+### 3. Voice Features
+- **Test TTS**: Click "Test TTS" button to verify voice functionality
+- **AI Speaking**: AI automatically speaks feedback (can be toggled)
+- **Voice Input**: Click microphone for voice-to-text input
+- **Settings**: Adjust voice speed, pitch, and volume
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎯 Coding Problems
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Current Problems
+1. **Find Duplicates** (Easy) - Array manipulation and hash sets
+2. **Two Sum** (Medium) - Hash map optimization techniques  
+3. **Valid Parentheses** (Medium) - Stack data structure patterns
+
+## 🔊 Voice Technology
+
+### Text-to-Speech Features
+- **Natural Voices** - Prefers high-quality neural voices
+- **Human-like Speech** - Enhanced text cleaning for natural flow
+- **Browser Compatibility** - Comprehensive fallback mechanisms
+- **Error Recovery** - Multiple TTS approaches for reliability
+
+## 📱 Browser Support
+
+### Fully Supported
+- **Chrome 90+** - Complete feature support
+- **Edge 90+** - Full functionality
+- **Safari 14+** - TTS may require user interaction
+- **Firefox 90+** - Voice quality may vary
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgments
+
+- **Google Gemini** - AI conversation capabilities
+- **Monaco Editor** - VS Code editing experience
+- **Web Speech API** - Voice interaction technology
+- **Next.js Team** - Amazing React framework
+- **Tailwind CSS** - Utility-first styling
+
+---
+
+**Built with ❤️ for coding interview success** 🎉
