@@ -380,7 +380,7 @@ export default function EnhancedChatInterface({
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type or speak your question... Ask for hints, explain your approach, or discuss the solution..."
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm transition-colors"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm transition-colors text-black placeholder-gray-400"
           />
           <button
             onClick={sendMessage}
