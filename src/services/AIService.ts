@@ -32,8 +32,8 @@ class AIService {
     if (!apiKey) {
       // During build time or when API key is missing, create a mock instance
       console.warn('Gemini API key not found - running in mock mode');
-      this.genAI = null as any;
-      this.model = null as any;
+      this.genAI = null;
+      this.model = null;
       return;
     }
     

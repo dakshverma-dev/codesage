@@ -33,7 +33,6 @@ export default function PracticePage() {
   const [isInterviewActive] = useState(true);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [hintsUsed, setHintsUsed] = useState(0);
-  const [questionsAsked, setQuestionsAsked] = useState(0);
   const [codeSubmissions, setCodeSubmissions] = useState(0);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -411,7 +410,7 @@ export default function PracticePage() {
   };
 
   const handleQuestionAsked = () => {
-    setQuestionsAsked(prev => prev + 1);
+    // Track questions asked for analytics
   };
 
   return (
