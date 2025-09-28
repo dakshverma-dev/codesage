@@ -46,6 +46,21 @@ export default function EnhancedChatInterface({
   const [aiService] = useState(() => new AIService());
   const [isSpeakingEnabled] = useState(true);
 
+  // Initialize voice service on mount
+  useEffect(() => {
+    const initializeVoice = async () => {
+      try {
+        console.log('🔄 Initializing voice service in chat interface...');
+        await voiceService.ensureReady();
+        console.log('✅ Voice service ready for chat interface');
+      } catch (error) {
+        console.error('❌ Voice service initialization failed in chat interface:', error);
+      }
+    };
+    
+    initializeVoice();
+  }, []);
+
   // Initial greeting effect
   useEffect(() => {
     if (messages.length === 0 && currentProblem && interviewPhase === 'initial') {
@@ -66,11 +81,11 @@ export default function EnhancedChatInterface({
           setMessages([initialMessage]);
         } catch (error) {
           console.error('Error getting initial greeting:', error);
-          // Fallback greeting that matches sample interaction
+          // Fallback greeting that sounds like a professional tech interviewer
           const fallbackMessage: Message = {
             id: '1',
             type: 'assistant',
-            content: `Let's start with this problem. Take your time and think aloud as you code. What's your initial approach?`,
+            content: `Hi, how are you? Best of luck for the interview. Let's begin. Please implement the solution. Start by explaining your approach, then proceed with the implementation.`,
             timestamp: new Date()
           };
           setMessages([fallbackMessage]);

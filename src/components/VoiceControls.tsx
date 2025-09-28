@@ -43,24 +43,41 @@ export default function VoiceControls({
     // Only run in browser
     if (typeof window === 'undefined') return;
     
-    // Load available voices
-    const loadVoices = () => {
-      setAvailableVoices(voiceService.getVoices());
+    // Initialize voice service properly
+    const initializeVoiceService = async () => {
+      try {
+        console.log('🔄 Initializing voice service...');
+        await voiceService.ensureReady();
+        
+        // Update UI after initialization
+        const loadVoices = () => {
+          setAvailableVoices(voiceService.getVoices());
+        };
+        
+        setSupportedFeatures(voiceService.isSupported());
+        setVoiceSettings(voiceService.getSettings());
+        loadVoices();
+        
+        // Listen for voice changes
+        window.speechSynthesis?.addEventListener('voiceschanged', loadVoices);
+        
+        console.log('✅ Voice service initialized successfully');
+      } catch (error) {
+        console.error('❌ Failed to initialize voice service:', error);
+      }
     };
-    
-    // Update supported features and settings after client hydration
-    setSupportedFeatures(voiceService.isSupported());
-    setVoiceSettings(voiceService.getSettings());
-    
-    loadVoices();
-    window.speechSynthesis?.addEventListener('voiceschanged', loadVoices);
+
+    // Initialize immediately
+    initializeVoiceService();
     
     return () => {
-      window.speechSynthesis?.removeEventListener('voiceschanged', loadVoices);
+      window.speechSynthesis?.removeEventListener('voiceschanged', () => {
+        setAvailableVoices(voiceService.getVoices());
+      });
     };
   }, []);
 
-  const startListening = () => {
+  const startListening = async () => {
     if (!supportedFeatures.speechRecognition) {
       alert('Speech recognition is not supported in your browser. Please try Chrome or Edge.');
       return;
@@ -68,6 +85,18 @@ export default function VoiceControls({
 
     setIsProcessing(true);
     setInterimTranscript('');
+
+    try {
+      // Ensure voice service is ready before starting
+      console.log('🔄 Ensuring voice service is ready for listening...');
+      await voiceService.ensureReady();
+      console.log('✅ Voice service ready, starting listening...');
+    } catch (error) {
+      console.error('❌ Failed to initialize voice service for listening:', error);
+      setIsProcessing(false);
+      alert('Voice service failed to initialize. Please try again.');
+      return;
+    }
 
     voiceService.startListening({
       onStart: () => {
@@ -90,11 +119,26 @@ export default function VoiceControls({
         onSpeechEnd?.();
       },
       onError: (error: Error | SpeechRecognitionErrorEvent) => {
-        console.error('Speech recognition error:', error);
         setIsListening(false);
         setIsProcessing(false);
         setInterimTranscript('');
-        alert('Speech recognition failed. Please try again.');
+        
+        const errorMessage = error instanceof Error ? error.message : 
+          (error as SpeechRecognitionErrorEvent)?.error || 'Unknown error';
+        
+        console.error('Speech recognition error:', errorMessage);
+        
+        // Provide user-friendly error messages
+        let userMessage = 'Speech recognition failed. Please try again.';
+        if (errorMessage.includes('not-allowed')) {
+          userMessage = 'Microphone permission denied. Please allow microphone access and try again.';
+        } else if (errorMessage.includes('no-speech')) {
+          userMessage = 'No speech detected. Please speak clearly and try again.';
+        } else if (errorMessage.includes('network')) {
+          userMessage = 'Network error. Please check your connection and try again.';
+        }
+        
+        alert(userMessage);
       }
     });
   };

@@ -61,22 +61,23 @@ class AIService {
    * Provides initial greeting when starting a problem
    */
   async getInitialGreeting(problemTitle: string, problemDescription: string): Promise<string> {
-    const prompt = `You are CodeSage, a friendly and encouraging AI interviewer. A candidate just started working on "${problemTitle}".
+    const prompt = `You are CodeSage, a senior technical interviewer at a top tech company. A candidate is about to work on "${problemTitle}".
 
     Problem: ${problemDescription}
 
-    Provide a warm, human-like greeting that:
-    - Welcomes them enthusiastically
-    - Mentions this is a common interview question
-    - Encourages them to think aloud
-    - Sets a supportive tone
-    - Keeps it conversational (2-3 sentences max)
+    Provide a professional greeting that includes a brief personal touch before moving to the interview:
+    - Start with a brief, warm greeting: "Hi, how are you? Best of luck for the interview."
+    - Then transition to professional, direct tone for the technical portion
+    - Maintain concise, objective instructions for the coding part
+    - Keep it professional but human (2-3 sentences total)
     
-    Style: Be encouraging, professional but friendly, like a senior engineer mentoring a colleague.`;
+    Example tone: "Hi, how are you? Best of luck for the interview. Let's begin. Please implement a function that finds duplicates in an array. Start by explaining your approach, then proceed with the implementation."
+    
+    Make it sound professional with a human touch, like a real tech interviewer.`;
 
     try {
       if (!this.checkModelAvailable()) {
-        return `👋 Welcome! Let's tackle "${problemTitle}" together. This is a popular interview question, so take your time and think aloud as you work through it - that's exactly what interviewers love to see!`;
+        return `Hi, how are you? Best of luck for the interview. Let's begin. Please implement a solution for "${problemTitle}". Start by explaining your approach, then proceed with the implementation.`;
       }
       
       const result = await this.model!.generateContent(prompt);
@@ -84,7 +85,7 @@ class AIService {
       return response.text();
     } catch (error) {
       console.error('Error getting initial greeting:', error);
-      return `👋 Welcome! Let's tackle "${problemTitle}" together. This is a popular interview question, so take your time and think aloud as you work through it - that's exactly what interviewers love to see!`;
+      return `Hi, how are you? Best of luck for the interview. Let's begin. Please implement a solution for "${problemTitle}". Start by explaining your approach, then proceed with the implementation.`;
     }
   }
 

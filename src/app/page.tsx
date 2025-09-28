@@ -63,6 +63,9 @@ export default function Home() {
             <Link href="/features" className="text-gray-600 hover:text-purple-600 transition-colors">
               Features
             </Link>
+            <Link href="/dashboard" className="text-gray-600 hover:text-purple-600 transition-colors">
+              Dashboard
+            </Link>
             <Link href="#testimonials" className="text-gray-600 hover:text-purple-600 transition-colors">
               Reviews
             </Link>
@@ -96,6 +99,13 @@ export default function Home() {
                 >
                   <Play className="w-5 h-5 mr-2" />
                   Start Coding Interview
+                </Link>
+                <Link 
+                  href="/dashboard"
+                  className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white px-8 py-4 rounded-lg transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl flex items-center justify-center"
+                >
+                  <BarChart3 className="w-5 h-5 mr-2" />
+                  Interviewer Dashboard
                 </Link>
                 <Link 
                   href="#features"

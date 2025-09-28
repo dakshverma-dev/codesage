@@ -43,6 +43,7 @@ interface VoiceServiceInterface {
   testTTS(): Promise<boolean>;
   reinitialize(): void;
   enableDebugMode(): void;
+  ensureReady(): Promise<boolean>;
 }
 
 export class VoiceService {
@@ -209,7 +210,10 @@ export class VoiceService {
       }, 30000);
 
       // Stop any current speech
-      this.stopSpeaking();
+      if (this.isSpeaking) {
+        console.log('🛑 Stopping current TTS to start new one');
+        this.stopSpeaking();
+      }
 
       // Clean text for better speech (remove markdown, code formatting)
       const cleanText = this.cleanTextForSpeech(text);
@@ -232,10 +236,26 @@ export class VoiceService {
         return;
       }
       
-      // Apply voice settings for more human-like speech
+      // Apply voice settings for professional tone with human warmth
       utterance.voice = this.currentVoice;
-      utterance.rate = options?.rate || this.settings.speechRate * 0.9; // Slightly slower for more natural feel
-      utterance.pitch = options?.pitch || this.settings.speechPitch;
+      
+      // Adjust tone based on content for greetings vs technical instructions
+      let rateMultiplier = 0.9; // Base rate for professional clarity
+      let pitchMultiplier = 1.0; // Base pitch
+      
+      // Warmer tone for greeting
+      if (cleanText.includes('Hi, how are you') || cleanText.includes('Best of luck')) {
+        rateMultiplier = 1.0;    // Normal speed for greeting
+        pitchMultiplier = 1.02;  // Slightly warmer pitch
+      }
+      // Professional tone for technical instructions
+      else if (cleanText.includes('Let\'s begin') || cleanText.includes('implement') || cleanText.includes('Start by')) {
+        rateMultiplier = 0.9;    // Slower for clarity
+        pitchMultiplier = 0.95;  // Lower, more authoritative
+      }
+      
+      utterance.rate = (options?.rate || this.settings.speechRate) * rateMultiplier;
+      utterance.pitch = (options?.pitch || this.settings.speechPitch) * pitchMultiplier;
       utterance.volume = options?.volume || this.settings.speechVolume;
 
       console.log('🎤 Using voice:', utterance.voice?.name || 'default');
@@ -257,26 +277,23 @@ export class VoiceService {
       };
 
       utterance.onerror = (error: SpeechSynthesisErrorEvent) => {
-        console.error('❌ TTS Error Details:', {
-          error,
-          errorType: typeof error,
-          errorKeys: Object.keys(error || {}),
-          errorReason: error?.error || 'No reason',
-          errorName: error?.type || 'No type',
-          errorMessage: (error as SpeechSynthesisErrorEvent & { message?: string })?.message || 'No message',
-          utteranceText: utterance.text.substring(0, 100),
-          utteranceVoice: utterance.voice?.name || 'No voice',
-          voicesAvailable: this.voices.length,
-          currentVoice: this.currentVoice?.name || 'None',
-          browserInfo: {
-            userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'Unknown',
-            platform: typeof window !== 'undefined' ? window.navigator.platform : 'Unknown'
-          },
-          synthesisState: {
-            pending: this.synthesis?.pending,
-            speaking: this.synthesis?.speaking,
-            paused: this.synthesis?.paused
-          }
+        const errorReason = error?.error || 'unknown';
+        
+        // Handle interruption gracefully (this is common and expected)
+        if (errorReason === 'interrupted' || errorReason === 'canceled') {
+          console.log('ℹ️ TTS was interrupted (this is normal when starting new speech)');
+          clearTimeout(timeoutId);
+          this.isSpeaking = false;
+          options?.onEnd?.();
+          resolve();
+          return;
+        }
+        
+        console.error('❌ TTS Error:', {
+          reason: errorReason,
+          type: error?.type || 'error',
+          text: utterance.text.substring(0, 50) + '...',
+          voice: utterance.voice?.name || 'default'
         });
         
         clearTimeout(timeoutId);
@@ -656,11 +673,12 @@ export class VoiceService {
       // Set a shorter timeout for recovery
       setTimeout(() => {
         if (!hasCompleted) {
-          console.warn('⏰ Recovery TTS timeout');
+          console.log('⏰ Recovery TTS timeout (this is normal, continuing silently)');
           cleanup();
-          reject(new Error('Recovery TTS timeout'));
+          // Don't reject on timeout, just resolve to avoid errors
+          resolve();
         }
-      }, 10000);
+      }, 5000); // Shorter timeout
 
       try {
         this.synthesis!.speak(utterance);
@@ -752,6 +770,54 @@ export class VoiceService {
       console.warn('⚠️ Potential TTS Issues Detected:', issues);
     }
   }
+
+  // Ensure voice service is ready for use
+  async ensureReady(): Promise<boolean> {
+    try {
+      console.log('🔄 Ensuring voice service is ready...');
+      
+      // Only initialize in browser
+      if (typeof window === 'undefined') {
+        console.log('⚠️ Server environment detected, voice service unavailable');
+        return false;
+      }
+      
+      // Initialize services if needed
+      if (!this.synthesis) {
+        console.log('🔄 Initializing speech synthesis...');
+        this.initializeVoices();
+      }
+      
+      // Wait for voices to load
+      if (this.voices.length === 0) {
+        console.log('🔄 Waiting for voices to load...');
+        await new Promise<void>((resolve) => {
+          const checkVoices = () => {
+            this.voices = this.synthesis?.getVoices() || [];
+            if (this.voices.length > 0) {
+              resolve();
+            } else {
+              setTimeout(checkVoices, 100);
+            }
+          };
+          checkVoices();
+        });
+      }
+      
+      // Ensure speech recognition is initialized
+      if (!this.recognition) {
+        console.log('🔄 Initializing speech recognition...');
+        this.initializeSpeechRecognition();
+      }
+      
+      const isReady = this.voices.length > 0 && (this.recognition !== null || !('webkitSpeechRecognition' in window));
+      console.log(`✅ Voice service ready: ${isReady}`);
+      return isReady;
+    } catch (error) {
+      console.error('❌ Failed to ensure voice service is ready:', error);
+      return false;
+    }
+  }
 }
 
 // Create singleton instance - but only in browser
@@ -779,6 +845,7 @@ export const voiceService = (() => {
     getState: () => ({ isListening: false, isSpeaking: false, currentVoice: 'Default', voicesAvailable: 0, settings: {} }),
     testTTS: async () => false,
     reinitialize: () => {},
-    enableDebugMode: () => {}
+    enableDebugMode: () => {},
+    ensureReady: async () => false
   } as VoiceServiceInterface;
 })();
