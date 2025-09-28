@@ -570,11 +570,11 @@ export default function PracticePage() {
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Time:</span>
-                    <span className="font-mono">{metrics.executionTime > 0 ? `${metrics.executionTime.toFixed(1)}ms` : '-'}</span>
+                    <span className="font-mono text-black">{metrics.executionTime > 0 ? `${metrics.executionTime.toFixed(1)}ms` : '-'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Memory:</span>
-                    <span className="font-mono">{metrics.memoryUsage > 0 ? `${metrics.memoryUsage.toFixed(1)}MB` : '-'}</span>
+                    <span className="font-mono text-black">{metrics.memoryUsage > 0 ? `${metrics.memoryUsage.toFixed(1)}MB` : '-'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Complexity:</span>
@@ -611,12 +611,12 @@ export default function PracticePage() {
           </div>
         </div>
 
-        {/* AI Assistant Panel */}
+        {/* CodeSage Interviewer Panel */}
         <div className="w-80 bg-white border-l border-gray-200 flex flex-col">
           <div className="px-4 py-2 border-b border-gray-200 bg-gray-50">
             <div className="flex items-center space-x-2">
               <MessageSquare className="w-4 h-4 text-purple-600" />
-              <h3 className="text-sm font-medium text-gray-700">AI Assistant</h3>
+              <h3 className="text-sm font-medium text-gray-700">CodeSage Interviewer</h3>
               <div className="ml-auto">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               </div>

@@ -77,7 +77,7 @@ export default function InterviewTracker({
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs text-gray-600">Total Time</span>
-          <span className="text-lg font-mono font-semibold text-gray-900">
+          <span className="text-lg font-mono font-semibold text-black">
             {formatTime(elapsedTime)}
           </span>
         </div>

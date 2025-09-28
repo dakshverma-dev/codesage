@@ -53,7 +53,7 @@ export default function PerformanceMetrics({ metrics, interviewMetrics }: Perfor
             <Clock className="w-3 h-3 text-gray-500" />
             <span className="text-xs text-gray-600">Execution Time</span>
           </div>
-          <span className="text-xs font-mono text-gray-900">
+          <span className="text-xs font-mono text-black">
             {metrics.executionTime > 0 ? `${metrics.executionTime.toFixed(2)}ms` : '-'}
           </span>
         </div>
@@ -64,7 +64,7 @@ export default function PerformanceMetrics({ metrics, interviewMetrics }: Perfor
             <Cpu className="w-3 h-3 text-gray-500" />
             <span className="text-xs text-gray-600">Memory Usage</span>
           </div>
-          <span className="text-xs font-mono text-gray-900">
+          <span className="text-xs font-mono text-black">
             {metrics.memoryUsage > 0 ? `${metrics.memoryUsage.toFixed(1)}MB` : '-'}
           </span>
         </div>
