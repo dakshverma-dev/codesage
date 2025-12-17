@@ -1,139 +1,107 @@
-# 🎯 CodeSage - AI-Powered Interview Practice Platform
+CodeSage – AI-Powered Interview Practice Platform
 
-An interactive coding interview practice platform with AI-powered guidance, voice interaction, and real-time feedback.
+CodeSage is an interactive coding interview practice platform designed to simulate a real technical interview experience. The project focuses on helping users practice problem solving while receiving structured, real-time guidance similar to that of a human interviewer.
 
-## 🚀 Features
+This project was built as part of a hackathon and emphasizes rapid prototyping, collaboration, and applying computer science fundamentals in a time-constrained environment.
 
-### 🤖 AI-Powered Interview Experience
-- **Interactive AI Interviewer** - CodeSage provides real-time feedback on every code execution
-- **Smart Guidance** - AI guides without spoiling answers, just like a real interviewer
-- **Complexity Analysis** - Real-time analysis of algorithm complexity (O(n), O(n²), etc.)
-- **Approach Recognition** - Detects coding patterns and suggests optimizations
+Project Goals
 
-### 🗣️ Voice Integration
-- **Text-to-Speech** - AI speaks feedback naturally with human-like voice
-- **Speech Recognition** - Voice input for hands-free interaction
-- **Browser Compatibility** - Works across Chrome, Safari, Edge, and Firefox
-- **Enhanced Error Recovery** - Multiple fallback mechanisms for reliable voice functionality
+Simulate realistic coding interview scenarios
 
-### 💻 Advanced Code Editor
-- **Monaco Editor** - VS Code-like editing experience
-- **Syntax Highlighting** - Full Python syntax support
-- **Real-time Analysis** - Code complexity and pattern detection
-- **Multi-problem Support** - Progressive difficulty with 3+ coding challenges
+Provide guided feedback without revealing solutions
 
-### 📊 Interview Metrics
-- **Time Tracking** - Monitor coding session duration
-- **Attempt Counter** - Track code execution attempts
-- **Hint Usage** - Optional hints with usage tracking
-- **Progress Analytics** - Performance metrics and feedback
+Encourage structured problem solving and optimization thinking
 
-## 🛠️ Tech Stack
+Explore the use of AI and voice interaction in learning tools
 
-- **Framework:** Next.js 15 with TypeScript
-- **Styling:** Tailwind CSS
-- **AI Integration:** Google Gemini 2.5-flash
-- **Voice APIs:** Web Speech API (SpeechSynthesis + SpeechRecognition)
-- **Code Editor:** Monaco Editor (VS Code editor component)
-- **Icons:** Lucide React
-- **Build Tool:** Turbopack
+Key Features
+AI-Guided Interview Experience
 
-## 🚀 Getting Started
+Interactive AI interviewer that provides feedback after each code execution
 
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- Google Gemini API key
+Guidance focused on approach and improvement rather than direct answers
 
-### Installation
+Real-time analysis of time complexity and common coding patterns
 
-1. **Clone the repository**
-```bash
-git clone https://github.com/yourusername/codesage.git
-cd codesage
-```
+Suggestions for potential optimizations based on detected approaches
 
-2. **Install dependencies**
-```bash
-npm install
-```
+Voice Interaction
 
-3. **Set up environment variables**
-Create a `.env.local` file in the root directory and add your Google Gemini API key:
-```env
-NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
-```
+Text-to-speech feedback for a more natural interview experience
 
-4. **Run the development server**
-```bash
-npm run dev
-```
+Speech-to-text input for hands-free interaction
 
-5. **Open in browser**
-Navigate to [http://localhost:3000](http://localhost:3000)
+Browser-compatible implementation with fallback mechanisms for reliability
 
-## 🎮 How to Use
+Coding Environment
 
-### 1. Start Interview Session
-- Click "Start Practice Session" on the homepage
-- Choose from available coding problems
-- Begin with the first problem
+Integrated code editor with Python syntax highlighting
 
-### 2. Coding Experience
-- Write your solution in the Monaco editor
-- Click "Run Code" for AI feedback after each attempt
-- AI provides encouraging guidance without spoiling answers
-- Use voice controls for hands-free interaction
+Real-time code execution and feedback loop
 
-### 3. Voice Features
-- **Test TTS**: Click "Test TTS" button to verify voice functionality
-- **AI Speaking**: AI automatically speaks feedback (can be toggled)
-- **Voice Input**: Click microphone for voice-to-text input
-- **Settings**: Adjust voice speed, pitch, and volume
+Multiple coding problems with increasing difficulty levels
 
-## 🎯 Coding Problems
+Interview Metrics
 
-### Current Problems
-1. **Find Duplicates** (Easy) - Array manipulation and hash sets
-2. **Two Sum** (Medium) - Hash map optimization techniques  
-3. **Valid Parentheses** (Medium) - Stack data structure patterns
+Session time tracking
 
-## 🔊 Voice Technology
+Code execution attempt count
 
-### Text-to-Speech Features
-- **Natural Voices** - Prefers high-quality neural voices
-- **Human-like Speech** - Enhanced text cleaning for natural flow
-- **Browser Compatibility** - Comprehensive fallback mechanisms
-- **Error Recovery** - Multiple TTS approaches for reliability
+Optional hints with usage tracking
 
-## 📱 Browser Support
+Performance feedback to reflect interview behavior
 
-### Fully Supported
-- **Chrome 90+** - Complete feature support
-- **Edge 90+** - Full functionality
-- **Safari 14+** - TTS may require user interaction
-- **Firefox 90+** - Voice quality may vary
+Tech Stack
 
-## 🤝 Contributing
+Frontend: Next.js with TypeScript
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Styling: Tailwind CSS
 
-## 📄 License
+AI Integration: Google Gemini
+
+Voice APIs: Web Speech API
+
+Code Editor: Monaco Editor
+
+Tooling: Turbopack
+
+What I Learned
+
+Translating interview expectations into product requirements
+
+Applying data structures and algorithms concepts in real-world scenarios
+
+Rapid prototyping under strict time constraints
+
+Collaborating effectively within a small team during a hackathon
+
+Integrating AI and voice interfaces into a web application
+
+Coding Problems Included
+
+Find Duplicates – array manipulation and hashing concepts
+
+Two Sum – hash map optimization techniques
+
+Valid Parentheses – stack-based problem solving patterns
+
+Browser Support
+
+Chrome and Edge: full feature support
+
+Safari and Firefox: supported with minor limitations in voice functionality
+
+License
 
 This project is licensed under the MIT License.
 
-## 🙏 Acknowledgments
+Acknowledgments
 
-- **Google Gemini** - AI conversation capabilities
-- **Monaco Editor** - VS Code editing experience
-- **Web Speech API** - Voice interaction technology
-- **Next.js Team** - Amazing React framework
-- **Tailwind CSS** - Utility-first styling
+Google Gemini for AI interaction capabilities
 
----
+Monaco Editor for the in-browser coding environment
 
-**Built with ❤️ for coding interview success** 🎉
+Web Speech API for voice interaction
+
+Next.js and Tailwind CSS for frontend development
+
