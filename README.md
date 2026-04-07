@@ -109,18 +109,4 @@ Web Speech API for voice interaction
 
 Next.js and Tailwind CSS for frontend development
 
-Why this README works
 
-Clear structure → easy recruiter scanning
-
-Focus on learning and fundamentals
-
-No startup or founder signaling
-
-Reads like a strong student engineering project
-
-If you want, next I can:
-
-Rewrite Heart-Disease-Predictor README in the same style
-
-Or help you choose which repo to pin first for Microsoft Explore
